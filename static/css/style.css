@@ -1,0 +1,10 @@
+.mit{
+    height: 500px;
+    object-fit: cover;
+    width: 100%;
+}
+@media (max-width: 768px) {
+    .mit{
+        height: 300px;
+    }
+}

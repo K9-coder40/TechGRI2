@@ -35,7 +35,276 @@
   </div>
 </nav>
 
+ <!-- 6 Main Services (Card Grid) -->
+  <section class="py-5 container">
+    <div class="text-center mb-5">
+      <span class="badge bg-success px-3 py-2 fs-6 mb-2">TechGri Ecosystem</span>
+      <h2 class="fw-bold text-success">Comprehensive Farming Solutions</h2>
+    </div>
 
+    <div class="row g-4">
+      
+      <!-- Card 1: Extension & Education -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm service-card p-3">
+          <div class="card-body">
+            <div class="icon-wrapper mb-3">
+              <i class="bi bi-play-btn-fill"></i>
+            </div>
+            <h4 class="card-title fw-bold text-success">1. Extension & Education</h4>
+            <p class="card-text text-muted">Access short instructional video reels and simplified crop notes. Learn disease prevention, planting techniques, and extension guidelines on the go.</p>
+            <div class="d-flex gap-2 mt-3">
+              <a href="#reels-section" class="btn btn-sm btn-outline-success rounded-pill">Watch Clips</a>
+              <button class="btn btn-sm btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#uploadModal"><i class="bi bi-upload me-1"></i>Post Clip</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Farmers Hub -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm service-card p-3">
+          <div class="card-body">
+            <div class="icon-wrapper mb-3">
+              <i class="bi bi-people-fill"></i>
+            </div>
+            <h4 class="card-title fw-bold text-success">2. Farmers Hub</h4>
+            <p class="card-text text-muted">Connect, chat, and share experiences with fellow farmers, extension officers, and agricultural students in regional discussion groups.</p>
+            <a href="contact.html" class="btn btn-sm btn-outline-success rounded-pill mt-3">Join Community</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Record Keeping -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm service-card p-3">
+          <div class="card-body">
+            <div class="icon-wrapper mb-3">
+              <i class="bi bi-journal-check"></i>
+            </div>
+            <h4 class="card-title fw-bold text-success">3. Smart Record Keeping</h4>
+            <p class="card-text text-muted">Effortlessly track planting dates, fertilizer inputs, harvest yields, and income metrics to manage your farm efficiently.</p>
+            <a href="contact.html" class="btn btn-sm btn-outline-success rounded-pill mt-3">Start Logging</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Produce Marketplace -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm service-card p-3">
+          <div class="card-body">
+            <div class="icon-wrapper mb-3">
+              <i class="bi bi-shop-window"></i>
+            </div>
+            <h4 class="card-title fw-bold text-success">4. Produce Marketplace</h4>
+            <p class="card-text text-muted">Buy and sell fresh farm harvests, certified seeds, and equipment directly with local traders without middleman markups.</p>
+            <a href="#market-section" class="btn btn-sm btn-outline-success rounded-pill mt-3">View Market</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5: AI Agronomist Assistant -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm service-card p-3">
+          <div class="card-body">
+            <div class="icon-wrapper mb-3">
+              <i class="bi bi-robot"></i>
+            </div>
+            <h4 class="card-title fw-bold text-success">5. Interact with AI</h4>
+            <p class="card-text text-muted">Ask our AI agronomy assistant questions regarding crop diseases, soil nutrients, or pest diagnostics and get immediate, accurate advice.</p>
+            <a href="#ai-section" class="btn btn-sm btn-outline-success rounded-pill mt-3">Ask AI Bot</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6: Farm Games & Rankings -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm service-card p-3">
+          <div class="card-body">
+            <div class="icon-wrapper mb-3">
+              <i class="bi bi-controller"></i>
+            </div>
+            <h4 class="card-title fw-bold text-success">6. Interactive Farm Games</h4>
+            <p class="card-text text-muted">Test your agronomic knowledge with fun farming simulations and quizzes. Earn AgriPoints and compete on the community leaderboard.</p>
+            <a href="#games-section" class="btn btn-sm btn-outline-success rounded-pill mt-3">View Rankings</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive Feature 1: Extension Reels Section -->
+  <section id="reels-section" class="py-5 bg-white border-top border-bottom">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h3 class="fw-bold text-success mb-1"><i class="bi bi-camera-reels me-2"></i>Educational Extension Reels</h3>
+          <p class="text-muted mb-0">Short video guides posted by farmers and extension agents</p>
+        </div>
+        <button class="btn btn-techgri" data-bs-toggle="modal" data-bs-target="#uploadModal">
+          <i class="bi bi-plus-circle me-1"></i>Post Educational Clip
+        </button>
+      </div>
+
+      <div class="row g-4">
+        <!-- Reel Card 1 -->
+        <div class="col-md-4">
+          <div class="card reel-card shadow-sm h-100">
+            <div class="reel-thumb" style="background-image: url('https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=600&q=80');">
+              <span class="badge bg-success position-absolute top-0 start-0 m-3"><i class="bi bi-tag-fill me-1"></i>Pest Control</span>
+              <a href="#" class="position-absolute top-50 start-50 translate-middle text-white fs-1"><i class="bi bi-play-circle-fill"></i></a>
+            </div>
+            <div class="card-body">
+              <h5 class="fw-bold card-title">Managing Fall Armyworm Early</h5>
+              <p class="text-muted small mb-2"><i class="bi bi-person-circle me-1"></i>By Extension Officer Peter</p>
+              <p class="card-text small">Simple field steps to identify early signs of armyworm in maize and apply organic controls.</p>
+            </div>
+            <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+              <button class="btn btn-sm btn-outline-success"><i class="bi bi-hand-thumbs-up-fill me-1"></i>128 Likes</button>
+              <button class="btn btn-sm btn-outline-primary"><i class="bi bi-share-fill me-1"></i>Share</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reel Card 2 -->
+        <div class="col-md-4">
+          <div class="card reel-card shadow-sm h-100">
+            <div class="reel-thumb" style="background-image: url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=600&q=80');">
+              <span class="badge bg-success position-absolute top-0 start-0 m-3"><i class="bi bi-tag-fill me-1"></i>Horticulture</span>
+              <a href="#" class="position-absolute top-50 start-50 translate-middle text-white fs-1"><i class="bi bi-play-circle-fill"></i></a>
+            </div>
+            <div class="card-body">
+              <h5 class="fw-bold card-title">Dragon Fruit Trellis Erection</h5>
+              <p class="text-muted small mb-2"><i class="bi bi-person-circle me-1"></i>By Farmer Langat</p>
+              <p class="card-text small">How to set up concrete support pillars and tire frames for healthy dragon fruit propagation.</p>
+            </div>
+            <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+              <button class="btn btn-sm btn-outline-success"><i class="bi bi-hand-thumbs-up-fill me-1"></i>245 Likes</button>
+              <button class="btn btn-sm btn-outline-primary"><i class="bi bi-share-fill me-1"></i>Share</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reel Card 3 -->
+        <div class="col-md-4">
+          <div class="card reel-card shadow-sm h-100">
+            <div class="reel-thumb" style="background-image: url('https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=600&q=80');">
+              <span class="badge bg-success position-absolute top-0 start-0 m-3"><i class="bi bi-tag-fill me-1"></i>Soil Health</span>
+              <a href="#" class="position-absolute top-50 start-50 translate-middle text-white fs-1"><i class="bi bi-play-circle-fill"></i></a>
+            </div>
+            <div class="card-body">
+              <h5 class="fw-bold card-title">Composting Agricultural Waste</h5>
+              <p class="text-muted small mb-2"><i class="bi bi-person-circle me-1"></i>By Student Agent Mary</p>
+              <p class="card-text small">Transform crop residues into rich organic fertilizer in under 21 days.</p>
+            </div>
+            <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+              <button class="btn btn-sm btn-outline-success"><i class="bi bi-hand-thumbs-up-fill me-1"></i>98 Likes</button>
+              <button class="btn btn-sm btn-outline-primary"><i class="bi bi-share-fill me-1"></i>Share</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 6: Farm Games & Leaderboard Section -->
+  <section id="games-section" class="py-5 container">
+    <div class="row align-items-center">
+      <div class="col-lg-5 mb-4 mb-lg-0">
+        <span class="badge bg-warning text-dark px-3 py-2 fw-bold mb-2"><i class="bi bi-trophy-fill me-1"></i>Gamified Learning</span>
+        <h3 class="fw-bold text-success mb-3">Farm Games & Leaderboards</h3>
+        <p class="text-muted">Test your farm management decision skills! Solve virtual pest outbreaks, plan crop rotations, and answer weekly extension quizzes to earn AgriPoints and climb the community rankings.</p>
+        <button class="btn btn-techgri"><i class="bi bi-controller me-2"></i>Play Farm Quiz Game</button>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="card shadow-sm border-0 rounded-3">
+          <div class="card-header bg-techgri text-white d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-award-fill text-warning me-2"></i>TechGri Top Farmers Leaderboard</h5>
+            <span class="badge bg-light text-dark">October 2026</span>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Rank</th>
+                    <th>Farmer / Agent</th>
+                    <th>Region</th>
+                    <th>AgriPoints</th>
+                    <th>Badge Unlocked</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="fw-bold text-success">#1</td>
+                    <td>Joseph K.</td>
+                    <td>Nakuru Hub</td>
+                    <td><span class="badge bg-success">2,850 pts</span></td>
+                    <td><span class="badge bg-warning text-dark"><i class="bi bi-patch-check-fill"></i> Master Agronomist</span></td>
+                  </tr>
+                  <tr>
+                    <td class="fw-bold text-primary">#2</td>
+                    <td>Mary W.</td>
+                    <td>Kericho West</td>
+                    <td><span class="badge bg-success">2,610 pts</span></td>
+                    <td><span class="badge bg-secondary"><i class="bi bi-star-fill"></i> Extension Leader</span></td>
+                  </tr>
+                  <tr>
+                    <td class="fw-bold text-secondary">#3</td>
+                    <td>David O.</td>
+                    <td>Eldoret Central</td>
+                    <td><span class="badge bg-success">2,420 pts</span></td>
+                    <td><span class="badge bg-info text-dark"><i class="bi bi-shield-check"></i> Pest Expert</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal for Farmer Video Upload -->
+  <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-techgri text-white">
+          <h5 class="modal-title fw-bold" id="uploadModalLabel"><i class="bi bi-upload me-2"></i>Upload Extension Short Clip</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Clip Title</label>
+              <input type="text" class="form-control" placeholder="e.g., How to apply fertilizer in tea">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Select Crop / Category Tag</label>
+              <select class="form-select">
+                <option selected>Select Tag...</option>
+                <option>Maize & Cereals</option>
+                <option>Horticulture & Fruits</option>
+                <option>Pest & Disease Control</option>
+                <option>Soil & Fertilizer</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Select Video File</label>
+              <input type="file" class="form-control" accept="video/*">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Short Field Notes</label>
+              <textarea class="form-control" rows="3" placeholder="Briefly describe what farmers will learn..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-techgri w-100">Submit Educational Clip</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
   
  <!-- footer -->

@@ -90,3 +90,11 @@
     .about-card:hover {
       transform: translateY(-5px);
     }
+    #about-title {
+      color: rgb(222, 114, 6);
+      font-weight: bold;
+    }
+    #about-subtitle {
+      color: rgb(255, 255, 0);
+      font-weight: bold;
+    }

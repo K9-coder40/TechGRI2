@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .mit{
     height: 500px;
     object-fit: cover;
@@ -98,4 +99,12 @@
       color: rgb(255, 255, 0);
       font-weight: bold;
     }
-  
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechGri Drone Rush - Wreck & Escape Edition</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- favicon -->
+    <link href="static/images/techgri.jpg" rel="icon">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        agri: {
+                            dark: '#0b1016',
+                            card: '#111923',
+                            border: '#1b2a3a',
+                            emerald: '#10b981',
+                            lightEmerald: '#34d399',
+                            gold: '#f59e0b',
+                            danger: '#ef4444',
+                            cyan: '#06b6d4'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b1016;
+            color: #ecfdf5;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            user-select: none;
+            overflow-x: hidden;
+        }
+        canvas {
+            touch-action: none;
+        }
+        .glow-emerald {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+        }
+        .glow-danger {
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+        }
+        .glass-panel {
+            background: rgba(17, 25, 35, 0.85);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+        .shake {
+            animation: shakeAnim 0.35s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shakeAnim {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center bg-gradient-to-b from-[#0b1016] via-[#080d12] to-[#04070a]">
+
+    <!-- Header HUD -->
+    <header class="w-full border-b border-agri-border bg-agri-dark/90 backdrop-blur sticky top-0 z-40 px-4 py-3">
+        <div class="max-w-5xl mx-auto flex justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-agri-emerald/20 border border-agri-emerald flex items-center justify-center text-agri-lightEmerald text-xl shadow-lg glow-emerald">
+                    <i class="fa-solid fa-plane-up"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black font-heading text-white tracking-wide flex items-center gap-2">
+                        TechGri <span class="text-agri-lightEmerald text-xs font-mono uppercase bg-agri-emerald/15 border border-agri-emerald/40 px-2.5 py-0.5 rounded-full">Drone Rush</span>
+                    </h1>
+                    <p class="text-xs text-agri-lightEmerald/70 hidden sm:block">Wreck & Escape Edition • 1-Tap Harvest</p>
+                </div>
+            </div>
+
+            <!-- Global Score & Hull Stats HUD -->
+            <div class="flex items-center gap-3 sm:gap-4 text-xs font-semibold">
+                <div class="hidden sm:flex bg-agri-card/90 border border-agri-border px-3 py-1.5 rounded-xl items-center gap-2">
+                    <i class="fa-solid fa-trophy text-amber-400"></i>
+                    <span>Best: <strong id="hudBest" class="text-amber-400 font-bold">0</strong></span>
+                </div>
+                <div class="bg-agri-card/90 border border-agri-border px-3 py-1.5 rounded-xl flex items-center gap-2">
+                    <i class="fa-solid fa-star text-agri-lightEmerald"></i>
+                    <span>Score: <strong id="hudScore" class="text-white text-base font-black">0</strong></span>
+                </div>
+                
+                <!-- Hull Integrity Bar -->
+                <div class="bg-agri-card/90 border border-agri-border px-3 py-1.5 rounded-xl flex items-center gap-2">
+                    <i class="fa-solid fa-heart-pulse text-agri-danger animate-pulse"></i>
+                    <div class="w-20 bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
+                        <div id="hullBar" class="bg-gradient-to-r from-agri-emerald to-agri-lightEmerald h-full w-full transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <button id="btnSoundToggle" onclick="toggleAudio()" class="w-9 h-9 rounded-xl border border-agri-border bg-agri-card hover:bg-agri-emerald/20 text-agri-lightEmerald flex items-center justify-center transition">
+                    <i id="soundIcon" class="fa-solid fa-volume-high"></i>
+                </button>
+
+                <button onclick="pauseAndExit()" class="px-3 py-1.5 rounded-xl border border-agri-danger/40 bg-agri-danger/10 hover:bg-agri-danger text-agri-danger hover:text-white font-bold transition flex items-center gap-1.5 text-xs">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span class="hidden sm:inline">Exit</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Game Section -->
+    <main class="w-full max-w-4xl px-4 py-4 flex-1 flex flex-col items-center justify-center relative">
+
+        <!-- Canvas Container -->
+        <div id="canvasFrame" class="w-full relative glass-panel rounded-3xl overflow-hidden shadow-2xl border border-agri-border flex items-center justify-center">
+            
+            <canvas id="gameCanvas" width="800" height="500" class="w-full h-auto block bg-slate-950 cursor-pointer"></canvas>
+
+            <!-- Active Power-up Badge -->
+            <div id="powerupBadge" class="absolute top-4 left-4 bg-agri-dark/90 border border-agri-cyan text-agri-cyan px-4 py-1.5 rounded-full font-bold text-xs uppercase tracking-widest shadow-2xl opacity-0 transition duration-300 pointer-events-none flex items-center gap-2">
+                <i class="fa-solid fa-bolt animate-pulse"></i> <span id="powerupText">MAGNET ACTIVE</span>
+            </div>
+
+            <!-- Combo Popup Banner -->
+            <div id="comboBanner" class="absolute top-4 right-4 bg-amber-500/90 text-slate-950 font-black text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-2xl opacity-0 transition duration-300 pointer-events-none transform scale-90">
+                <span id="comboText">COMBO x2!</span>
+            </div>
+
+            <!-- Start Overlay Screen -->
+            <div id="startModal" class="absolute inset-0 bg-agri-dark/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-30">
+                <div class="w-20 h-20 rounded-3xl bg-agri-emerald/20 border-2 border-agri-emerald flex items-center justify-center text-agri-lightEmerald text-4xl mb-4 glow-emerald">
+                    <i class="fa-solid fa-satellite-dish"></i>
+                </div>
+                <h2 class="text-4xl font-black font-heading text-white mb-2 tracking-tight">TechGri Drone Rush</h2>
+                <p class="text-sm text-slate-300 max-w-md mb-6 leading-relaxed">
+                    Tap or Click anywhere to trigger the Harvester Beam! <br>
+                    Harvest <strong class="text-agri-lightEmerald">Tea, Maize, and Dragon Fruit</strong> while avoiding <strong class="text-agri-danger">Bio-Bombs (💣) and Locusts (🦗)</strong>!
+                </p>
+
+                <button onclick="startGame()" class="px-10 py-4 bg-gradient-to-r from-agri-emerald to-emerald-500 hover:from-agri-lightEmerald hover:to-emerald-400 text-agri-dark font-black text-base rounded-2xl uppercase tracking-wider transition-all duration-300 shadow-2xl transform hover:scale-105 glow-emerald flex items-center gap-3">
+                    <i class="fa-solid fa-play"></i> Deploy Harvester Drone
+                </button>
+            </div>
+
+            <!-- Game Over / Drone Wrecked Screen -->
+            <div id="gameOverModal" class="absolute inset-0 bg-agri-dark/95 backdrop-blur-md hidden flex-col items-center justify-center p-6 text-center z-30">
+                <div class="w-16 h-16 rounded-2xl bg-agri-danger/20 border border-agri-danger flex items-center justify-center text-agri-danger text-3xl mb-3 glow-danger">
+                    <i class="fa-solid fa-skull-crossbones animate-bounce"></i>
+                </div>
+                <h2 class="text-3xl font-black font-heading text-white mb-1">MISSION FAILED: DRONE WRECKED!</h2>
+                <p id="rankTitle" class="text-xs text-agri-danger uppercase tracking-widest font-bold mb-6">Critical Hull Destruction in Sector B</p>
+
+                <div class="grid grid-cols-3 gap-3 max-w-md w-full mb-8">
+                    <div class="bg-agri-card border border-agri-border p-3 rounded-xl">
+                        <div class="text-[11px] text-slate-400 uppercase font-semibold">Final Score</div>
+                        <div id="finalScore" class="text-2xl font-black text-white">0</div>
+                    </div>
+                    <div class="bg-agri-card border border-agri-border p-3 rounded-xl">
+                        <div class="text-[11px] text-slate-400 uppercase font-semibold">Max Combo</div>
+                        <div id="finalCombo" class="text-2xl font-black text-amber-400">x1</div>
+                    </div>
+                    <div class="bg-agri-card border border-agri-border p-3 rounded-xl">
+                        <div class="text-[11px] text-slate-400 uppercase font-semibold">Crops Saved</div>
+                        <div id="finalCrops" class="text-2xl font-black text-agri-lightEmerald">0</div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button onclick="startGame()" class="px-7 py-3.5 bg-gradient-to-r from-agri-emerald to-emerald-500 hover:from-agri-lightEmerald hover:to-emerald-400 text-agri-dark font-black text-sm rounded-xl uppercase tracking-wider transition shadow-xl flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Re-Deploy Drone
+                    </button>
+                    <button onclick="exitToMenu()" class="px-7 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm rounded-xl uppercase tracking-wider transition border border-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-house"></i> Main Menu
+                    </button>
+                </div>
+            </div>
+
+            <!-- Exit / Pause Modal Overlay -->
+            <div id="pauseModal" class="absolute inset-0 bg-agri-dark/95 backdrop-blur-md hidden flex-col items-center justify-center p-6 text-center z-30">
+                <div class="w-16 h-16 rounded-2xl bg-agri-cyan/20 border border-agri-cyan flex items-center justify-center text-agri-cyan text-3xl mb-3">
+                    <i class="fa-solid fa-circle-pause"></i>
+                </div>
+                <h2 class="text-2xl font-black font-heading text-white mb-2">HARVEST PAUSED</h2>
+                <p class="text-xs text-slate-400 max-w-xs mb-6">Mission in progress. Resume harvesting or exit to main menu.</p>
+
+                <div class="flex flex-col gap-3 max-w-xs w-full">
+                    <button onclick="resumeGame()" class="py-3 bg-agri-emerald hover:bg-agri-lightEmerald text-agri-dark font-black text-sm rounded-xl uppercase tracking-wider transition shadow-lg">
+                        <i class="fa-solid fa-play mr-1"></i> Resume Harvest
+                    </button>
+                    <button onclick="exitToMenu()" class="py-3 bg-agri-card border border-agri-border hover:bg-slate-800 text-slate-300 font-bold text-sm rounded-xl uppercase tracking-wider transition">
+                        <i class="fa-solid fa-house mr-1"></i> Exit to Main Menu
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <p class="text-xs text-slate-400 mt-3 text-center">
+            <i class="fa-solid fa-keyboard text-agri-lightEmerald"></i> Tap Screen, Click Mouse, or Press <kbd class="px-2 py-0.5 bg-agri-card border border-agri-border text-white rounded font-mono">SPACEBAR</kbd> to drop beam! Press <kbd class="px-2 py-0.5 bg-agri-card border border-agri-border text-white rounded font-mono">ESC</kbd> to Pause.
+        </p>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full border-t border-agri-border bg-agri-dark/80 py-3 text-center text-xs text-slate-400">
+        <p>© TechGri Agricultural Technologies • DooshWorld Hub</p>
+    </footer>
+
+    <!-- Audio & Canvas Game Engine -->
+    <script>
+        // Web Audio Synthesizer
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'beam') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(450, now);
+                osc.frequency.exponentialRampToValueAtTime(100, now + 0.15);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now); osc.stop(now + 0.15);
+            } else if (type === 'catch') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.08);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.16);
+                osc.start(now); osc.stop(now + 0.16);
+            } else if (type === 'hazard') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.setValueAtTime(110, now + 0.15);
+                gain.gain.setValueAtTime(0.35, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now); osc.stop(now + 0.25);
+            } else if (type === 'wreck') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.5);
+                gain.gain.setValueAtTime(0.5, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.5);
+                osc.start(now); osc.stop(now + 0.5);
+            }
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').className = soundEnabled ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark";
+        }
+
+        // Engine State
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let isRunning = false;
+        let isPaused = false;
+        let score = 0;
+        let bestScore = localStorage.getItem('techgri_high_score') || 0;
+        let combo = 1;
+        let maxCombo = 1;
+        let totalCropsCaught = 0;
+        let hullIntegrity = 100;
+
+        document.getElementById('hudBest').innerText = bestScore;
+
+        const drone = {
+            x: 100, y: 65, w: 70, h: 30, vx: 5, dir: 1,
+            beamActive: false, beamTimer: 0, beamW: 40, wrecked: false
+        };
+
+        let crops = [];
+        let particles = [];
+        let scorePopups = [];
+        let activePowerup = null;
+        let powerupTimeLeft = 0;
+
+        const CROP_TYPES = [
+            { id: 'tea', name: 'Highland Tea', color: '#10b981', points: 100, icon: '🍃', chance: 0.45 },
+            { id: 'maize', name: 'Hybrid Maize', color: '#f59e0b', points: 150, icon: '🌽', chance: 0.25 },
+            { id: 'dragon', name: 'Dragon Fruit', color: '#ec4899', points: 250, icon: '🌺', chance: 0.1 },
+            { id: 'bomb', name: 'Bio-Bomb', color: '#ef4444', points: -150, icon: '💣', isBad: true, chance: 0.12 },
+            { id: 'locust', name: 'Locust Swarm', color: '#dc2626', points: -100, icon: '🦗', isBad: true, chance: 0.08 }
+        ];
+
+        class Particle {
+            constructor(x, y, color, speedScale = 1) {
+                this.x = x; this.y = y; this.color = color;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = (Math.random() * 5 + 1) * speedScale;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.life = 30; this.maxLife = 30;
+            }
+            update() { this.x += this.vx; this.y += this.vy; this.life--; }
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.life / this.maxLife);
+                ctx.fillStyle = this.color;
+                ctx.beginPath(); ctx.arc(this.x, this.y, 4, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class ScorePopup {
+            constructor(x, y, text, color) {
+                this.x = x; this.y = y; this.text = text; this.color = color; this.life = 35;
+            }
+            update() { this.y -= 1.2; this.life--; }
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.life / 35);
+                ctx.fillStyle = this.color;
+                ctx.font = '800 16px Outfit, sans-serif';
+                ctx.fillText(this.text, this.x, this.y);
+                ctx.restore();
+            }
+        }
+
+        function triggerHarvestBeam() {
+            if (!isRunning || isPaused || drone.wrecked) return;
+            drone.beamActive = true;
+            drone.beamTimer = 14;
+            playSound('beam');
+        }
+
+        window.addEventListener('pointerdown', (e) => {
+            if (e.target.closest('button')) return;
+            triggerHarvestBeam();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') { e.preventDefault(); triggerHarvestBeam(); }
+            if (e.code === 'Escape') { pauseAndExit(); }
+        });
+
+        function spawnCrop() {
+            if (Math.random() < 0.045) {
+                const rand = Math.random();
+                let cumulative = 0;
+                let selected = CROP_TYPES[0];
+
+                for (let type of CROP_TYPES) {
+                    cumulative += type.chance;
+                    if (rand <= cumulative) { selected = type; break; }
+                }
+
+                crops.push({
+                    x: Math.random() * (canvas.width - 60) + 30,
+                    y: canvas.height + 20,
+                    vy: -(Math.random() * 1.5 + 1.2),
+                    vx: (Math.random() - 0.5) * 1,
+                    radius: 20,
+                    type: selected
+                });
+            }
+        }
+
+        function update() {
+            if (drone.wrecked) return;
+
+            drone.x += drone.vx * drone.dir;
+            if (drone.x + drone.w / 2 >= canvas.width - 20) drone.dir = -1;
+            else if (drone.x - drone.w / 2 <= 20) drone.dir = 1;
+
+            if (drone.beamActive) {
+                drone.beamTimer--;
+                if (drone.beamTimer <= 0) drone.beamActive = false;
+            }
+
+            crops.forEach((crop, index) => {
+                crop.y += crop.vy;
+                crop.x += crop.vx;
+
+                if (drone.beamActive) {
+                    const beamLeft = drone.x - drone.beamW / 2;
+                    const beamRight = drone.x + drone.beamW / 2;
+                    if (crop.x >= beamLeft && crop.x <= beamRight && crop.y >= drone.y) {
+                        handleCatch(crop, index);
+                    }
+                }
+                if (crop.y < -30) crops.splice(index, 1);
+            });
+
+            particles.forEach((p, i) => { p.update(); if (p.life <= 0) particles.splice(i, 1); });
+            scorePopups.forEach((sp, i) => { sp.update(); if (sp.life <= 0) scorePopups.splice(i, 1); });
+
+            spawnCrop();
+        }
+
+        function handleCatch(crop, index) {
+            for (let i = 0; i < 12; i++) particles.push(new Particle(crop.x, crop.y, crop.type.color));
+
+            if (crop.type.isBad) {
+                // Damage Drone
+                hullIntegrity = Math.max(0, hullIntegrity - 34);
+                combo = 1;
+                score = Math.max(0, score - 150);
+                scorePopups.push(new ScorePopup(crop.x, crop.y, '-34% HULL!', '#ef4444'));
+                playSound('hazard');
+
+                // Trigger Screen Shake
+                document.getElementById('canvasFrame').classList.add('shake');
+                setTimeout(() => document.getElementById('canvasFrame').classList.remove('shake'), 350);
+
+                if (hullIntegrity <= 0) {
+                    wreckDroneSequence();
+                }
+            } else {
+                totalCropsCaught++;
+                let earned = crop.type.points * combo;
+                score += earned;
+                combo++;
+                if (combo > maxCombo) maxCombo = combo;
+                playSound('catch');
+                scorePopups.push(new ScorePopup(crop.x, crop.y, `+${earned}`, crop.type.color));
+            }
+
+            // Update Hull Bar
+            const bar = document.getElementById('hullBar');
+            bar.style.width = hullIntegrity + '%';
+            if (hullIntegrity < 40) bar.className = "bg-agri-danger h-full transition-all duration-300";
+            
+            document.getElementById('hudScore').innerText = score;
+            crops.splice(index, 1);
+        }
+
+        function wreckDroneSequence() {
+            drone.wrecked = true;
+            playSound('wreck');
+
+            // Spawn explosion particles
+            for (let i = 0; i < 40; i++) {
+                particles.push(new Particle(drone.x, drone.y, '#ef4444', 2.5));
+                particles.push(new Particle(drone.x, drone.y, '#f59e0b', 2.5));
+            }
+
+            setTimeout(() => {
+                endGame();
+            }, 600);
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0b1016';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Harvester Beam
+            if (drone.beamActive && !drone.wrecked) {
+                ctx.save();
+                const beamGrad = ctx.createLinearGradient(drone.x, drone.y, drone.x, canvas.height);
+                beamGrad.addColorStop(0, 'rgba(16, 185, 129, 0.9)');
+                beamGrad.addColorStop(1, 'rgba(16, 185, 129, 0.05)');
+                ctx.fillStyle = beamGrad;
+                ctx.fillRect(drone.x - drone.beamW / 2, drone.y + 10, drone.beamW, canvas.height - drone.y);
+                ctx.restore();
+            }
+
+            // Drone Render
+            if (!drone.wrecked) {
+                ctx.save();
+                ctx.translate(drone.x, drone.y);
+                ctx.fillStyle = hullIntegrity < 40 ? '#ef4444' : '#10b981';
+                ctx.beginPath(); ctx.roundRect(-drone.w / 2, -drone.h / 2, drone.w, drone.h, 10); ctx.fill();
+                ctx.restore();
+            }
+
+            // Draw Crops & Hazards
+            crops.forEach(crop => {
+                ctx.save();
+                ctx.beginPath(); ctx.arc(crop.x, crop.y, crop.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(17, 25, 35, 0.8)';
+                ctx.strokeStyle = crop.type.color; ctx.lineWidth = 2;
+                ctx.fill(); ctx.stroke();
+                ctx.font = '18px Outfit'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(crop.type.icon, crop.x, crop.y + 1);
+                ctx.restore();
+            });
+
+            particles.forEach(p => p.draw(ctx));
+            scorePopups.forEach(sp => sp.draw(ctx));
+        }
+
+        function loop() {
+            if (!isRunning || isPaused) return;
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        function startGame() {
+            document.getElementById('startModal').classList.add('hidden');
+            document.getElementById('gameOverModal').classList.add('hidden');
+            document.getElementById('pauseModal').classList.add('hidden');
+
+            score = 0; combo = 1; maxCombo = 1; totalCropsCaught = 0; hullIntegrity = 100;
+            crops = []; particles = []; scorePopups = [];
+            drone.wrecked = false;
+
+            document.getElementById('hullBar').style.width = '100%';
+            document.getElementById('hudScore').innerText = '0';
+            isRunning = true; isPaused = false;
+            loop();
+        }
+
+        function pauseAndExit() {
+            if (!isRunning) return;
+            isPaused = true;
+            document.getElementById('pauseModal').classList.remove('hidden');
+            document.getElementById('pauseModal').classList.add('flex');
+        }
+
+        function resumeGame() {
+            document.getElementById('pauseModal').classList.add('hidden');
+            isPaused = false;
+            loop();
+        }
+
+        function exitToMenu() {
+            isRunning = false; isPaused = false;
+            document.getElementById('pauseModal').classList.add('hidden');
+            document.getElementById('gameOverModal').classList.add('hidden');
+            document.getElementById('startModal').classList.remove('hidden');
+        }
+
+        function endGame() {
+            isRunning = false;
+            if (score > bestScore) {
+                bestScore = score;
+                localStorage.setItem('techgri_high_score', bestScore);
+                document.getElementById('hudBest').innerText = bestScore;
+            }
+
+            document.getElementById('finalScore').innerText = score;
+            document.getElementById('finalCombo').innerText = `x${maxCombo}`;
+            document.getElementById('finalCrops').innerText = totalCropsCaught;
+
+            document.getElementById('gameOverModal').classList.remove('hidden');
+            document.getElementById('gameOverModal').classList.add('flex');
+        }
+    </script>
+</body>
+</html>
